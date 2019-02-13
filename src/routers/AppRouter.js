@@ -6,7 +6,7 @@ import EditExpensePage from '../components/EditExpensePage';
 import AddExpensePage from '../components/AddExpensePage';
 import Header from '../components/Header';
 import ExpenseDashboardPage from '../components/ExpenseDashboard';
-import ReduxTest from '../playground/redux-101';
+//import ReduxTest from '../playground/redux-101';
 
 
 export default class AppRouter extends Component {
@@ -35,10 +35,7 @@ export default class AppRouter extends Component {
                   path="/help" 
                   component={HelpPage}
               />
-              <Route 
-                path="/reduxtest" 
-                component={ReduxTest}
-            />
+         
              
            
               <Route 

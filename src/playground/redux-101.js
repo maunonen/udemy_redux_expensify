@@ -8,10 +8,6 @@ export default class ReduxTest extends React.Component {
   render() {
 
 
-
-
-    
-
     // ADD_EXPENSE 
     const addExpense = (
         {description = '', 
@@ -62,16 +58,16 @@ export default class ReduxTest extends React.Component {
     })
 
     // SET_START_DATE
-    const setStartDate = (date ) => ({
+    const setStartDate = (startDate ) => ({
         type : 'SET_START_DATE', 
-        date
+        startDate
     })
     
     // SET_END_DATE
 
-    const setEndDate = (date ) => ({
+    const setEndDate = (endDate ) => ({
         type : 'SET_END_DATE', 
-        date
+        endDate
     })
 
     // get Visible expenses 
@@ -85,12 +81,18 @@ export default class ReduxTest extends React.Component {
         return expenses.filter((expense) => {
             const startDateMatch = typeof startDate !== 'number' || expense.createdAt >= startDate; 
             const endDateMatch = typeof endDate !== 'number' || expense.createdAt <= endDate; 
-            const textMatch = true; 
+            const textMatch = expense.description.toLowerCase().includes(text.toLowerCase()); 
             
             console.log(count ++, expense.createdAt);
             return startDateMatch && endDateMatch && textMatch ; 
 
 
+        }).sort((a, b ) => {
+            if (sortBy === 'date') {
+                return a.createdAt < b.createdAt ? 1 :  -1; 
+            } else if (sortBy === 'amount'){
+                return a.amount <  b.amount ? 1 : -1;  
+            }
         }) ; 
     };
 
@@ -111,17 +113,17 @@ export default class ReduxTest extends React.Component {
             return state.filter(({id}) => id !== action.id )
 
             case 'EDIT_EXPENSE' : 
-            console.log('EDIT EXPEnsis'); 
-            
-            console.log(state.map((expense) => {
+
+            return state.map((expense) => {
                 if (expense.id === action.id ) {
                     return {
                         ...expense, 
                         ...action.updates
                     }
-                    console.log(expense);
+                } else {
+                    return expense; 
                 }
-            })); 
+            }); 
             return 0; 
             default : 
                 return state; 
@@ -155,13 +157,13 @@ export default class ReduxTest extends React.Component {
             case 'SET_START_DATE' : 
             return {
                 ...state, 
-                startDate : action.date
+                startDate : action.startDate
 
             }
             case 'SET_END_DATE' : 
             return {
                 ...state, 
-                endDate : action.date
+                endDate : action.endDate
 
             }
 
@@ -193,6 +195,7 @@ export default class ReduxTest extends React.Component {
         const state = store.getState(); 
         const visibleExpenses = getVisibleExpenses(state.expenses, state.filter); 
         console.log('VISIBLE', visibleExpenses); 
+        console.log(state); 
     }); 
 
     const expenseOne = store.dispatch(addExpense({ description : 'Rent', amount : 100, createdAt : -1000 }));  
@@ -209,25 +212,24 @@ export default class ReduxTest extends React.Component {
     //store.dispatch(removeExpense({ id : expenseOne.expense.id})); 
     
 
-    store.dispatch(editExpense( expenseTwo.expense.id , { amount : 500 }))
+    store.dispatch(editExpense( expenseTwo.expense.id , { amount : 700 }))
 
-    //store.dispatch(setTextFilter( 'rent')); 
-    //store.dispatch(setTextFilter( )); 
+   
+    //store.dispatch(setTextFilter()); 
 
 
     //store.dispatch(sortByAmount()); 
-    //store.dispatch(sortByDate()); 
+    store.dispatch(sortByDate()); 
 
-    store.dispatch(setStartDate(-5000)); 
+    //store.dispatch(setStartDate(0)); 
     //store.dispatch(setStartDate(0)); 
 
     //store.dispatch(setEndDate(1250)); 
     //store.dispatch(setEndDate()); 
 
-    
-
-    //store.dispatch(addExpense({ description : 'Rent', amount : 100 }));  
-    //store.dispatch(addExpense({ description : 'Coffee', amount : 300 }));  
+    store.dispatch(addExpense({ description : 'Rent', amount : 100 }));  
+    store.dispatch(addExpense({ description : 'Coffee', amount : 300 }));  
+    //store.dispatch(setTextFilter('coffee')); 
    
     
     const demoState = {
